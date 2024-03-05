@@ -14,6 +14,19 @@ return [
     |
     */
 
+    // Configuração do HashIsd
+
+    'hashids' => [
+        'default' => 'main',
+        'connections' => [
+            'main' => [
+                // Chave Salt
+                'salt' => env('HASHIDS_SALT', 'sejLQ&as3J2b9@qX4lLm3Vfp$1K'),
+                'length' => env('HASHIDS_LENGTH', 10),
+            ],
+        ],
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
