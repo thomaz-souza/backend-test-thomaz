@@ -2,20 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Vinkla\Hashids\Facades\Hashids;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Redirect extends Model
 {
-    protected $fillable = ['url', 'code'];
+    use SoftDeletes;
 
-    public function setHashIdAttribute($id)
-    {
-        $this->attributes['code'] = Hashids::connection('main')->encode($id);
-    }
+    protected $fillable = ['status', 'target_url', 'last_accessed_at'];
 
-    public function getCodeAttribute()
+    public function logs()
     {
-        return Hashids::connection('main')->decode($this->attributes['code'])[0];
+        return $this->hasMany(RedirectLog::class);
     }
 }
