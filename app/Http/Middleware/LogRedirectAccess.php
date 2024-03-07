@@ -18,7 +18,7 @@ class LogRedirectAccess
      */
     public function handle(Request $request, Closure $next)
     {
-        $code = explode('/', $request->getPathInfo())[3];
+        $code = explode('/', $request->getPathInfo())[2];
         $id_redirect = Redirect::findByCode($code)['id'];
 
         RedirectLog::create([
