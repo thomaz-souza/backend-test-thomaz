@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RedirectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Registra o RedirectLog
+Route::get('/r/{code}', [RedirectController::class, 'show'])
+    ->middleware('logRedirectAccess')
+    ->name('redirects.show');
