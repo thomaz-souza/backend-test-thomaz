@@ -9,6 +9,7 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class Redirect extends Model
 {
+    use HasFactory;
     use SoftDeletes;
 
     // Define os campos a serem mostrados

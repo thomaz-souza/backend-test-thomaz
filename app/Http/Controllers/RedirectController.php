@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class RedirectController extends Controller
 {
-    //Mostra todas as redirects
+    // ***********************************************Mostra todas as redirects cadastradas****************************************************
     public function index()
     {
         // Recupera todos os redirecionamentos do banco de dados
@@ -18,7 +18,9 @@ class RedirectController extends Controller
         return response()->json($redirects);
     }
 
-    //Cria um redirecionamento validando informações
+
+
+    // ***********************************************Cria um Redirecionamento validando informações********************************************
     public function store(RedirectRequest $request)
     {
         $target_url = $request->validated()['target_url'];
@@ -41,7 +43,8 @@ class RedirectController extends Controller
     }
 
 
-    //Mostra as informações do redirecionamento
+
+    // ***********************************************Mostra as informações do redirecionamento*************************************************
     public function show(Request $request, $code)
     {
         //Query params da request
@@ -51,10 +54,11 @@ class RedirectController extends Controller
         $redirect = Redirect::findByCode($code);
 
         // Se o redirecionamento não for encontrado
-        if (!$redirect) {
-            return response()->json(['error' => 'Redirecionamento não encontrado'], 404);
+        if (!$redirect || $redirect == 0) {
+            return response()->json(['error' => 'Redirecionamento não encontrado ou'], 404);
         }
 
+        // Se não tiver parametros na query
         if (!$query_params) {
             return redirect($redirect->target_url);
         }
@@ -62,36 +66,9 @@ class RedirectController extends Controller
         return redirect($redirect->target_url . "?" . $query_params);
     }
 
-    //Mostra as informações do redirecionamento
-    public function showStats($code)
-    {
-        // Encontra o redirecionamento com base no código
-        $redirect = Redirect::findByCode($code);
-
-        // Se o redirecionamento não for encontrado
-        if (!$redirect) {
-            return response()->json(['error' => 'Redirecionamento não encontrado'], 404);
-        }
-
-        return redirect($redirect->target_url);
-    }
-
-    //Mostra as informações do redirecionamento
-    public function showLogs($code)
-    {
-        // Encontra o redirecionamento com base no código
-        $redirect = Redirect::findByCode($code);
-
-        // Se o redirecionamento não for encontrado
-        if (!$redirect) {
-            return response()->json(['error' => 'Redirecionamento não encontrado'], 404);
-        }
-
-        return redirect($redirect->target_url);
-    }
 
 
-    //Atualiza apenas a URL de destino e muda o status do redirecionamento
+    // ***********************************************Atualiza apenas a URL de destino e muda o status do redirecionamento**********************
     public function update(RedirectRequest $request, $code)
     {
         $validatedData = $request->validated();
@@ -113,7 +90,9 @@ class RedirectController extends Controller
         return response()->json(['message' => 'Redirecionamento atualizado com sucesso.']);
     }
 
-    //Cria uma data no campo date_delete e muda o status do redirecionamento
+
+
+    // ***********************************************Cria uma data no campo date_delete e muda o status do redirecionamento********************
     public function destroy($code)
     {
         // Encontra o redirecionamento com base no código
