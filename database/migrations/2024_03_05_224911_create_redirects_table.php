@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->boolean('status')->default(true);
             $table->string('target_url');
-            $table->dateTime('last_accessed_at')->nullable();
+            $table->dateTime('last_accessed_at');
             $table->timestamps();
             $table->softDeletes();
         });
