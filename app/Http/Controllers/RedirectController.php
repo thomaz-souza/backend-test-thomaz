@@ -9,6 +9,15 @@ use Illuminate\Http\Request;
 
 class RedirectController extends Controller
 {
+    //Mostra todas as redirects
+    public function index()
+    {
+        // Recupera todos os redirecionamentos do banco de dados
+        $redirects = Redirect::all();
+
+        return response()->json($redirects);
+    }
+
     //Cria um redirecionamento validando informações
     public function store(RedirectRequest $request)
     {
@@ -33,7 +42,28 @@ class RedirectController extends Controller
 
 
     //Mostra as informações do redirecionamento
-    public function show($code)
+    public function show(Request $request, $code)
+    {
+        //Query params da request
+        $query_params = http_build_query($request->query());
+
+        // Encontra o redirecionamento com base no código
+        $redirect = Redirect::findByCode($code);
+
+        // Se o redirecionamento não for encontrado
+        if (!$redirect) {
+            return response()->json(['error' => 'Redirecionamento não encontrado'], 404);
+        }
+
+        if (!$query_params) {
+            return redirect($redirect->target_url);
+        }
+
+        return redirect($redirect->target_url . "?" . $query_params);
+    }
+
+    //Mostra as informações do redirecionamento
+    public function showStats($code)
     {
         // Encontra o redirecionamento com base no código
         $redirect = Redirect::findByCode($code);
@@ -43,18 +73,21 @@ class RedirectController extends Controller
             return response()->json(['error' => 'Redirecionamento não encontrado'], 404);
         }
 
-        // Formatar o status para "ativo" ou "inativo"
-        $status = $redirect->status ? 'Ativo' : 'Inativo';
+        return redirect($redirect->target_url);
+    }
 
-        // Retornar os detalhes do redirect
-        return response()->json([
-            'Código' => $code,
-            'Status' => $status,
-            'URL de destino' => $redirect->target_url,
-            'Último acesso' => $redirect->last_accessed_at,
-            'Data de criação' => $redirect->created_at,
-            'Data de atualização' => $redirect->updated_at,
-        ]);
+    //Mostra as informações do redirecionamento
+    public function showLogs($code)
+    {
+        // Encontra o redirecionamento com base no código
+        $redirect = Redirect::findByCode($code);
+
+        // Se o redirecionamento não for encontrado
+        if (!$redirect) {
+            return response()->json(['error' => 'Redirecionamento não encontrado'], 404);
+        }
+
+        return redirect($redirect->target_url);
     }
 
 

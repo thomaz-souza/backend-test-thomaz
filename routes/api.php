@@ -19,9 +19,28 @@ use App\Http\Controllers\RedirectController;
 //     return $request->user();
 // });
 
-Route::prefix('redirects')->middleware('auth')->group(function () {
+Route::prefix('redirects')->group(function () {
+    //Mostra todos os redirects
+    Route::get('/', [RedirectController::class, 'index']);
+
+    //Cria uma redirect
     Route::post('/', [RedirectController::class, 'store']);
-    Route::get('/{code}', [RedirectController::class, 'show']);
+
+    //Registra o RedirectLog
+    Route::get('/{code}', [RedirectController::class, 'show'])
+        ->middleware('logRedirectAccess');
+
+    //Retorna as estatísticas de acesso do redirect
+    Route::get('/{code}/stats', [RedirectController::class, 'showStats']);
+
+    //Retorna os logs de acesso do redirect
+    Route::get('/{code}/logs', [
+        RedirectController::class, 'showLogs'
+    ]);
+
+    //Atualiza um redirect
     Route::put('/{code}', [RedirectController::class, 'update']);
+
+    //Deleta um Redirect
     Route::delete('/{code}', [RedirectController::class, 'destroy']);
 });
