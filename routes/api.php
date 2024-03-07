@@ -34,7 +34,6 @@ Route::resource('redirects', RedirectController::class)
     ->names([
         'index' => 'redirects.index',
         'store' => 'redirects.store',
-        'show' => 'redirects.show',
         'update' => 'redirects.update',
         'destroy' => 'redirects.destroy',
     ]);
