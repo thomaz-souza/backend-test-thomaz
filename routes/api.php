@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RedirectController;
+use App\Http\Controllers\RedirectLogsController;
 
 
 /*
@@ -20,27 +21,20 @@ use App\Http\Controllers\RedirectController;
 // });
 
 Route::prefix('redirects')->group(function () {
-    //Mostra todos os redirects
-    Route::get('/', [RedirectController::class, 'index']);
+    // Retorna as estatísticas de acesso do redirect
+    Route::get('/{code}/stats', [RedirectLogsController::class, 'showStats'])
+        ->name('redirects.stats');
 
-    //Cria uma redirect
-    Route::post('/', [RedirectController::class, 'store']);
-
-    //Registra o RedirectLog
-    Route::get('/{code}', [RedirectController::class, 'show'])
-        ->middleware('logRedirectAccess');
-
-    //Retorna as estatísticas de acesso do redirect
-    Route::get('/{code}/stats', [RedirectController::class, 'showStats']);
-
-    //Retorna os logs de acesso do redirect
-    Route::get('/{code}/logs', [
-        RedirectController::class, 'showLogs'
-    ]);
-
-    //Atualiza um redirect
-    Route::put('/{code}', [RedirectController::class, 'update']);
-
-    //Deleta um Redirect
-    Route::delete('/{code}', [RedirectController::class, 'destroy']);
+    // Retorna os logs de acesso do redirect
+    Route::get('/{code}/logs', [RedirectLogsController::class, 'showLogs'])
+        ->name('redirects.logs');
 });
+
+Route::resource('redirects', RedirectController::class)
+    ->names([
+        'index' => 'redirects.index',
+        'store' => 'redirects.store',
+        'show' => 'redirects.show',
+        'update' => 'redirects.update',
+        'destroy' => 'redirects.destroy',
+    ]);
