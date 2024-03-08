@@ -3,6 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
+
 
 class RedirectRequest extends FormRequest
 {
@@ -29,8 +33,8 @@ class RedirectRequest extends FormRequest
             'target_url' => [
                 'required',
                 'url',
-                'active_url',
                 'not_in:' . url('/'),
+                'regex:/^https:/'
             ],
         ];
     }
@@ -42,11 +46,19 @@ class RedirectRequest extends FormRequest
             'target_url.url' => 'O formato da URL de destino é inválido.',
             'target_url.active_url' => 'A URL de destino não está ativa.',
             'target_url.not_in' => 'A URL de destino não pode ser a mesma da aplicação.',
+            'target_url.regex' => "A url não é HTTPS"
         ];
     }
 
     public function response(array $errors)
     {
         return response()->json($errors, 422);
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json(['errors' => $validator->errors()], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
+        );
     }
 }
