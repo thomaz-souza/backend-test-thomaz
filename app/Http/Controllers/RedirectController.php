@@ -6,6 +6,7 @@ use App\Models\Redirect;
 use App\Http\Requests\RedirectRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class RedirectController extends Controller
 {
@@ -21,20 +22,15 @@ class RedirectController extends Controller
 
 
     // ***********************************************Cria um Redirecionamento validando informações********************************************
+
+
     public function store(RedirectRequest $request)
     {
         $target_url = $request->validated()['target_url'];
 
-        // Verifica se a URL de destino está disponível e é HTTPS
-        $response = Http::get($target_url);
-
-        if (!$response->getProtocolVersion() === '2') {
-            return response()->json(['error' => 'A URL de destino não é HTTPS'], 400);
-        }
-
         // Cria o redirecionamento
         $redirect = Redirect::create([
-            'status' => $response->successful() ? 1 : 0,
+            'status' => 1,
             'target_url' => $target_url,
             'last_accessed_at' => now()
         ]);
@@ -54,8 +50,8 @@ class RedirectController extends Controller
         $redirect = Redirect::findByCode($code);
 
         // Se o redirecionamento não for encontrado
-        if (!$redirect || $redirect == 0) {
-            return response()->json(['error' => 'Redirecionamento não encontrado ou'], 404);
+        if (!$redirect) {
+            return response()->json(['error' => 'Redirecionamento não encontrado ou não está acessível'], 404);
         }
 
         // Se não tiver parametros na query
