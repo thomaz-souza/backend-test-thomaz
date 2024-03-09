@@ -24,7 +24,6 @@ class RedirectFactory extends Factory
     {
 
         $url = $this->faker->url;
-        // Substitua "http://" por "https://"
         $httpsUrl = preg_replace('/^http:/', 'https:', $url);
         $httpsUrl .= '?' . $this->faker->word;
 

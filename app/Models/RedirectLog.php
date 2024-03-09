@@ -10,7 +10,14 @@ class RedirectLog extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['redirect_id', 'request_ip', 'user_agent', 'referer', 'query_params', 'accessed_at'];
+    protected $fillable = [
+        'redirect_id',
+        'request_ip',
+        'user_agent',
+        'referer',
+        'query_params',
+        'accessed_at'
+    ];
 
     public function redirect()
     {
@@ -27,6 +34,7 @@ class RedirectLog extends Model
         )
             ->where('accessed_at', '>=', now()->subDays(10))
             ->groupBy('date');
+
 
         // Total de acessos
         $totalAcessos = RedirectLog::count();
